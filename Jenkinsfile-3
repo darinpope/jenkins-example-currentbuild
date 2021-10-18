@@ -5,7 +5,7 @@ pipeline {
     stage('Hello') {
       steps {
         sh 'echo Hello World'
-        addSidebarLink(url:'https://www.cloudbees.com/', text:'CloudBees website', icon:'cloudbees-68-70.png')
+        addSidebarLink(url:'https://www.cloudbees.com/', text:'CloudBees website', icon:'/userContent/cloudbees-68-70.png')
       }
     }
   }
