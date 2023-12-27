@@ -11,11 +11,11 @@ pipeline {
       steps {
         sh """
           echo "FROM alpine:latest" > Dockerfile
-          docker build -t ${imageTag} .
+          docker build .
         """
         sh '''
           echo $DH_CREDS_PSW | docker login --username=$DH_CREDS_USR --password-stdin
-          docker tag ${imageTag} .
+          docker tag ${imageTag}
         '''
         script {
           def sha256 = sh(returnStdout: true, script:"docker push ${imageTag} | grep sha256 | awk -F':' '{print \$4}' | awk '{print \$1}'").trim()
