@@ -9,18 +9,20 @@ pipeline {
   stages {
     stage('Hello') {
       steps {
+        // build a dockerfile
         sh """
-          echo "FROM alpine:latest" > Dockerfile // build a dockerfile
+          echo "FROM alpine:latest" > Dockerfile
           docker build -t ${imageTag} .
         """
+        // login to image dockerhub
         sh '''
-          echo $DH_CREDS_PSW | docker login --username=$DH_CREDS_USR --password-stdin // login to image dockerhub; 
+          echo $DH_CREDS_PSW | docker login --username=$DH_CREDS_USR --password-stdin  
         '''
+        // Docker uses a content-addressable image store, and the image ID is a SHA256 digest covering the image's configuration and layers ... https://www.movable-type.co.uk/scripts/sha256.html
+        // https://docs.docker.com/engine/reference/commandline/pull/
+        // awk tp pull a value from this grepped output
         script {
-          def sha256 = sh(returnStdout: true, script:"docker push ${imageTag} | grep sha256 | awk -F':' '{print \$4}' | awk '{print \$1}'").trim() // do a docker push an grep out from sha256
-          // Docker uses a content-addressable image store, and the image ID is a SHA256 digest covering the image's configuration and layers ... https://www.movable-type.co.uk/scripts/sha256.html
-          // https://docs.docker.com/engine/reference/commandline/pull/
-          // awk tp pull a value from this grepped output
+          def sha256 = sh(returnStdout: true, script:"docker push ${imageTag} | grep sha256 | awk -F':' '{print \$4}' | awk '{print \$1}'").trim() // do a docker push an grep out from sha256      
           echo 'print out trimmed sha256'
           echo sha256
           def url = "https://hub.docker.com/layers/" + env.DH_CREDS_USR + "/alpine/" + timeInMillis + "/images/sha256-" + sha256 + "?context=explore" // build url with credentials and sha256 to this docker container image
