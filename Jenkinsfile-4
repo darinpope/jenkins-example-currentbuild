@@ -11,6 +11,7 @@ pipeline {
     stage('Hello') {
       steps {
         sh """
+          docker logout
           echo "FROM alpine:latest" > Dockerfile
           docker build -t ${imageTag} . 
           echo $DH_CREDS_PSW | docker login --username=$DH_CREDS_USR --password-stdin
