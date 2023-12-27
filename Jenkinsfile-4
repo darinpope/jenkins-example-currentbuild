@@ -16,7 +16,7 @@ pipeline {
         """
         // login to image dockerhub
         sh '''
-          echo $DH_CREDS_PSW | docker login docker.io --username=$DH_CREDS_USR --password-stdin  
+          echo $DH_CREDS_PSW | docker login --username=$DH_CREDS_USR --password-stdin  
         '''
         // Docker uses a content-addressable image store, and the image ID is a SHA256 digest covering the image's configuration and layers ... https://www.movable-type.co.uk/scripts/sha256.html
         // https://docs.docker.com/engine/reference/commandline/pull/
@@ -24,7 +24,7 @@ pipeline {
 // do a docker push an grep out from sha256 
 // build url with credentials and sha256 to this docker container image
         script {
-          def sha256 = sh(returnStdout: true, script:"docker push ${imageTag} | grep sha256").trim()  
+          def sha256 = sh(returnStdout: true, script:"docker push ${imageTag} | grep sha256 | awk -F':' '{print \$4}' | awk '{print \$1}'").trim()    
           echo sha256
           def url = "https://hub.docker.com/layers/" + env.DH_CREDS_USR + "/alpine/" + timeInMillis + "/images/sha256-" + sha256 + "?context=explore" 
           addSidebarLink(url:url,text:"Image on Docker Hub",icon:"star.gif")
