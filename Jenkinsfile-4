@@ -16,7 +16,7 @@ pipeline {
         """
         // login to image dockerhub
         sh '''
-          echo $DH_CREDS_PSW | docker login --username=$DH_CREDS_USR --password-stdin  
+          echo $DH_CREDS_PSW | docker login docker.io --username=$DH_CREDS_USR --password-stdin  
         '''
         // Docker uses a content-addressable image store, and the image ID is a SHA256 digest covering the image's configuration and layers ... https://www.movable-type.co.uk/scripts/sha256.html
         // https://docs.docker.com/engine/reference/commandline/pull/
