@@ -1,4 +1,5 @@
 def timeInMillis = currentBuild.timeInMillis
+def number = currentBuild.number
 def imageTag = "darinpope/alpine:" + timeInMillis
 @Library("shared-library") _
 pipeline {
@@ -15,7 +16,7 @@ pipeline {
         """
         sh '''
           echo $DH_CREDS_PSW | docker login --username=$DH_CREDS_USR --password-stdin
-          docker tag ./${imageTag} ./${imageTag}
+          docker tag darinpope/alpine:number ${imageTag}
         '''
         script {
           def sha256 = sh(returnStdout: true, script:"docker push ${imageTag} | grep sha256 | awk -F':' '{print \$4}' | awk '{print \$1}'").trim()
