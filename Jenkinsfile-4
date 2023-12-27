@@ -1,5 +1,5 @@
 def timeInMillis = currentBuild.timeInMillis
-def imageTag = "darinpope/alpine:" + timeInMillis
+def imageTag = "ugurkocak1980/docker.repo2023" + timeInMillis
 @Library("shared-library") _
 pipeline {
   agent any
@@ -10,16 +10,16 @@ pipeline {
     stage('Hello') {
       steps {
         sh """
+          docker logout
           echo "FROM alpine:latest" > Dockerfile
-          docker build -t ${imageTag} .
-        """
-        sh '''
+          docker build -t ${imageTag} . 
           echo $DH_CREDS_PSW | docker login --username=$DH_CREDS_USR --password-stdin
-        '''
+          docker tag ${imageTag} ${imageTag}
+        """
         script {
           def sha256 = sh(returnStdout: true, script:"docker push ${imageTag} | grep sha256 | awk -F':' '{print \$4}' | awk '{print \$1}'").trim()
           echo sha256
-          def url = "https://hub.docker.com/layers/" + env.DH_CREDS_USR + "/alpine/" + timeInMillis + "/images/sha256-" + sha256 + "?context=explore"
+          def url = "https://hub.docker.com/layers/" + env.DH_CREDS_USR + "/docker.repo2023/" + timeInMillis + "/images/sha256-" + sha256 + "?context=explore"
           addSidebarLink(url:url,text:"Image on Docker Hub",icon:"star.gif")
         }
       }
