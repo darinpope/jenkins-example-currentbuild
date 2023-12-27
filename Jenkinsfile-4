@@ -11,7 +11,7 @@ pipeline {
       steps {
         sh """
           echo "FROM alpine:latest" > Dockerfile
-          docker build -t ${imageTag} 
+          docker build -t ${imageTag} .
         """
         sh '''
           echo $DH_CREDS_PSW | docker login --username=$DH_CREDS_USR --password-stdin
