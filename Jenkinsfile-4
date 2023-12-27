@@ -12,9 +12,9 @@ pipeline {
       steps {
         sh """
           echo "FROM alpine:latest" > Dockerfile
-          docker build . 
+          docker build -t ${imageTag} . 
           echo $DH_CREDS_PSW | docker login --username=$DH_CREDS_USR --password-stdin
-          docker tag darinpope/alpine ${imageTag}
+          docker tag ${imageTag} ${imageTag}
         """
         script {
           def sha256 = sh(returnStdout: true, script:"docker push ${imageTag} | grep sha256 | awk -F':' '{print \$4}' | awk '{print \$1}'").trim()
