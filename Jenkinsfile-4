@@ -19,7 +19,7 @@ pipeline {
         script {
           def sha256 = sh(returnStdout: true, script:"docker push ${imageTag} | grep sha256 | awk -F':' '{print \$4}' | awk '{print \$1}'").trim()
           echo sha256
-          def url = "https://hub.docker.com/layers/" + env.DH_CREDS_USR + "/docker.repo2023/" + timeInMillis + "/images/sha256-" + sha256 + "?context=explore"
+          def url = "https://hub.docker.com/layers/" + env.DH_CREDS_USR + "/docker.repo2023/" + timeInMillis + "/latest/images/sha256-" + sha256 + "?context=explore"
           addSidebarLink(url:url,text:"Image on Docker Hub",icon:"star.gif")
         }
       }
